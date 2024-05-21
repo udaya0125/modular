@@ -63,61 +63,61 @@ class _ModularDivisionState extends State<ModularDivision> {
       ),
     );
   }
+void _calculateModularDivision() {
+  if (_formKey.currentState!.validate()) {
+    final a = BigInt.parse(_aController.text);
+    final b = BigInt.parse(_bController.text);
+    final n = BigInt.parse(_nController.text);
 
-  void _calculateModularDivision() {
-    if (_formKey.currentState!.validate()) {
-      final a = int.parse(_aController.text);
-      final b = int.parse(_bController.text);
-      final n = int.parse(_nController.text);
-
-      final bInverse = _modInverse(b, n);
-      if (bInverse == null) {
-        setState(() {
-          _result = 'No modular inverse exists for b under modulo n';
-        });
-      } else {
-        final result = (a * bInverse) % n;
-        setState(() {
-          _result = 'Division Result: $result';
-        });
-      }
-    }
-  }
-
-  void _calculateRemainder() {
-    if (_formKey.currentState!.validate()) {
-      final a = int.parse(_aController.text);
-      final n = int.parse(_nController.text);
-
-      final result = _mod(a, n);
+    final bInverse = _modInverse(b, n);
+    if (bInverse == null) {
       setState(() {
-        _result = 'Remainder: $result';
+        _result = 'No modular inverse exists for b under modulo n';
+      });
+    } else {
+      final result = (a * bInverse) % n;
+      setState(() {
+        _result = 'Division Result: $result';
       });
     }
   }
+}
 
-  int _mod(int a, int n) {
-    int result = a % n;
-    if (result < 0) {
-      result += n;
-    }
-    return result;
+void _calculateRemainder() {
+  if (_formKey.currentState!.validate()) {
+    final a = BigInt.parse(_aController.text);
+    final n = BigInt.parse(_nController.text);
+
+    final result = _mod(a, n);
+    setState(() {
+      _result = 'Remainder: $result';
+    });
+  }
+}
+
+BigInt _mod(BigInt a, BigInt n) {
+  BigInt result = a % n;
+  if (result < BigInt.zero) {
+    result += n;
+  }
+  return result;
+}
+
+BigInt? _modInverse(BigInt b, BigInt n) {
+  BigInt t = BigInt.zero, newT = BigInt.one;
+  BigInt r = n, newR = b;
+
+  while (newR != BigInt.zero) {
+    BigInt quotient = r ~/ newR;
+    BigInt temp = t;
+    t = newT;
+    newT = temp - quotient * newT;
+    BigInt tempR = r;
+    r = newR;
+    newR = tempR - quotient * newR;
   }
 
-  int? _modInverse(int b, int n) {
-    int t = 0, newT = 1;
-    int r = n, newR = b;
-
-    while (newR != 0) {
-      int quotient = r ~/ newR;
-      t = newT;
-      newT = t - quotient * newT;
-      r = newR;
-      newR = r - quotient * newR;
-    }
-
-    if (r > 1) return null;
-    if (t < 0) t += n;
-    return t;
-  }
+  if (r > BigInt.one) return null;
+  if (t < BigInt.zero) t += n;
+  return t;
 }
