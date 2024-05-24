@@ -55,8 +55,8 @@ class _MutuallyPrimeState extends State<MutuallyPrime> {
 
   void _checkMutuallyPrime() {
     if (_formKey.currentState!.validate()) {
-      final a = int.parse(_aController.text);
-      final b = int.parse(_bController.text);
+      final a = BigInt.parse(_aController.text);
+      final b = BigInt.parse(_bController.text);
       final result = _gcd(a, b) == 1;
 
       setState(() {
@@ -65,7 +65,7 @@ class _MutuallyPrimeState extends State<MutuallyPrime> {
     }
   }
 
-  int _gcd(int a, int b) {
+  int _gcd(BigInt a, BigInt b) {
     while (b != 0) {
       final t = b;
       b = a % b;
